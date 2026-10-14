@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Web & Perpustakaan (Pure JavaScript)</title>
+</head>
+<body>
+
+<script type="text/javascript">
+    // =========================================================================
+    // 1. MEMBUAT DAN MEMASUKKAN CSS KE DALAM HALAMAN
+    // =========================================================================
+    const styleSheet = document.createElement("style");
+    styleSheet.innerHTML = `
+        * { padding: 0; margin: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #dedede; font-size: 15px; color: #333; }
+        .lib-container { max-width: 1080px; margin: 20px auto; background: #fff; overflow: hidden; padding: 10px; border: 1px solid #dedede; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .lib-container p { margin-bottom: 20px; line-height: 1.5em; }
+        .lib-container h3 { margin-bottom: 20px; border-bottom: 1px solid #aaa; padding-bottom: 5px; }
+        .lib-container a { text-decoration: none; color: #333; }
+        .lib-container a:hover { color: #666; }
+        .header { border: 1px solid #dedede; padding: 10px; margin: 10px; background: #9E9AFB; }
+        .left { width: 250px; border: 1px solid #dedede; padding: 10px; margin: 10px; float: left; }
+        .left ul { list-style-type: none; }
+        .left ul li a { display: block; border-bottom: 1px solid #dedede; margin-bottom: 10px; padding: 10px 5px; color: #666; }
+        .left ul li a:hover { color: #461AF3; }
+        .middle { width: 500px; border: 1px solid #dedede; padding: 10px; margin: 10px; float: left; }
+        .middle img { max-width: 100%; height: auto; }
+        .middle a { font-weight: bold; }
+        .right { width: 250px; border: 1px solid #dedede; padding: 10px; margin: 10px; float: left; }
+        .right ul { list-style-type: none; }
+        .right ul li a { display: block; border-bottom: 1px solid #dedede; margin-bottom: 10px; padding: 10px 5px; }
+        .right ul li a:hover { color: #461AF3; }
+        .footer { clear: both; border: 1px solid #dedede; padding: 15px; background: #f8f8f8; text-align: center; }
+        @media screen and (max-width:1080px){ .lib-container {width: 95%;} .left {width: 25%; background: #D6CCFE;} .middle {width: 65%; float: right;} .right {clear: both; padding: 1% 4%; width: auto; float: none; background: #D6CCFE;} }
+        @media screen and (max-width: 780px){ .header, .footer {text-align: center;} .left, .middle, .right {width: auto; float: none;} }
+        
+        /* CSS Tugas Gabungan */
+        .tugas-container { background-color: #ffffff; padding: 40px 50px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); max-width: 900px; width: 95%; margin: 40px auto; }
+        .judul-tugas { color: #2c3e50; margin-bottom: 25px; font-size: 28px; border-bottom: 2px solid #3498db; padding-bottom: 10px; text-align: center; display: block; }
+        .tugas-container h2 { color: #2c3e50; margin-top: 40px; margin-bottom: 15px; font-size: 22px; border-left: 4px solid #3498db; padding-left: 10px; }
+        .info-box { background-color: #e8f4f8; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 5px solid #3498db; }
+        .info-label { font-size: 14px; color: #7f8c8d; margin-bottom: 5px; }
+        .info-value { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+        th, td { padding: 12px; border: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        pre { font-family: inherit; font-size: 15px; line-height: 1.8; margin: 0; white-space: pre-wrap; }
+        .btn { padding: 8px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; background-color: #3498db; color: white; font-size: 15px; }
+        .btn-reset { background-color: #e74c3c; }
+        .btn-dark { background-color: #2c3e50; }
+        .latihan-css-box ul { margin-bottom: 20px; margin-left: 20px; }
+        .latihan-css-box li:first-child a { color: green; }
+        .latihan-css-box li:last-child a { color: green; }
+        .latihan-css-box li:nth-child(even) a { color: green; }
+        .latihan-css-box li:nth-child(odd) a { color: violet; }
+        .big { font-family: Tahoma, sans-serif; font-weight: bold; font-size: 2em; }
+        .table-noborder td { border: none !important; padding: 8px; }
+        .latihan-background { background: #00ff00 url("gambar.gif") center center; border-left: none; border: 2px dashed #333; color: #000; }
+        .footer-date { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #7f8c8d; font-size: 14px; font-weight: bold; text-align: center; }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // =========================================================================
+    // 2. FUNGSI LOGIKA (GABUNGAN JAVASCRIPT LAMA & KONVERSI PHP)
+    // =========================================================================
+    
+    // Perhitungan Tiket
+    function hitungtotal() {
+        var tujuan = document.fform.itujuan.value;
+        var jumlahtiket = parseFloat(document.fform.ijumlah.value);
+        if (isNaN(jumlahtiket)) jumlahtiket = 0; 
+        
+        var ht = (tujuan == "Jakarta") ? 100000 : ((tujuan == "Cirebon") ? 150000 : 200000);
+        var sub = jumlahtiket * ht;
+        var diskon = (document.fform.imember.checked == true) ? 0.10 * sub : 0.0;
+        var total = sub - diskon; 
+        
+        document.fform.otiket.value = ht; 
+        document.fform.osub.value = sub; 
+        document.fform.odiskon.value = diskon; 
+        document.fform.ototal.value = total;
+    }
+
+    // Fungsi Alert
+    function myfunction(txt) { alert(txt); }
+
+    // Event Registrasi
+    function masukannim(){ if (document.f.inim.value == "") alert("Anda belum memasukkan NIM"); }
+    function masukannama(){ if (document.f.inama.value == "") alert("Anda belum memasukkan Nama"); }
+    function masukanalamat(){ if (document.f.ialamat.value == "") alert("Anda belum memasukkan Alamat"); }
+    function terimakasih(){
+        if (document.f.inim.value != "" && document.f.inama.value != "" && document.f.ialamat.value != "") {
+            alert("Terima Kasih Telah Mengisi Data");
+        } else {
+            alert("Mohon Data Dilengkapi");
+        }
+    }
+
+    // Jam Digital
+    var timer = null;
+    function startClock() {
+        var time = new Date();
+        var hours = time.getHours();
+        var minutes = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes(); 
+        var seconds = time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds(); 
+        
+        var displayElement = document.getElementById("clockDisplay");
+        if(displayElement) displayElement.value = hours + ":" + minutes + ":" + seconds;
+        timer = setTimeout(startClock, 1000); 
+    }
+
+    // Marquee
+    var pesan ="Hallo Friend...Apa Kabar? ";
+    var pesan2 ="Welcome To My website ";
+    function p(){
+        if(document.basis && document.basis.kotak) {
+            document.basis.kotak.value = pesan;
+            pesan = pesan.substr(1) + pesan.charAt(0);
+            pesan2 = pesan2.substr(1) + pesan2.charAt(0);
+            window.status = pesan2;
+            setTimeout(p, 100);
+        }
+    }
+
+    // PENGGANTI PHP (Bagian 4): Proses Form Beasiswa murni JS
+    function prosesBeasiswa() {
+        var nama = document.getElementsByName('nama_beasiswa')[0].value;
+        var nim = document.getElementsByName('nim_beasiswa')[0].value;
+        var kelas = document.getElementsByName('kelas_beasiswa')[0].value;
+        var jurusan = document.getElementsByName('jurusan_beasiswa')[0].value;
+        var jekelEl = document.querySelector('input[name="jekel"]:checked');
+        var jekel = jekelEl ? jekelEl.value : "-";
+        var ipk = parseFloat(document.getElementsByName('ipk')[0].value);
+        
+        var ket = (ipk >= 3.0) ? "Mendapat beasiswa sebesar Rp.1.000.000" : "Tidak dapat beasiswa";
+        
+        var hasilHTML = `
+            <hr><h3>Data Penerima Beasiswa:</h3>
+            <div class='info-box'>
+                Nama : ${nama}<br> Nim : ${nim}<br> Kelas : ${kelas}<br> Jurusan : ${jurusan} <br>
+                Jenis kelamin : ${jekel} <br> IPK : ${ipk}<br><br>
+                <strong>Menyatakan bahwa ${nama} ${ket}.</strong>
+            </div>`;
+        document.getElementById('hasilBeasiswa').innerHTML = hasilHTML;
+    }
+
+    // PENGGANTI PHP (Bagian 9): Proses Waktu Server murni JS
+    function prosesWaktuServer() {
+        var nama = document.getElementById('firstName').value;
+        if(nama) {
+            var dateStr = new Date().toString(); // Mendapatkan waktu dari JS alih-alih PHP Date()
+            document.getElementById('hasilWaktu').innerHTML = `
+                <h1>Hasil (Tanpa Forward)</h1>
+                <div class="big">
+                    <h2>Selamat Datang ${nama}</h2>
+                    <h2>Request sudah diterima dalam satu file dengan melampirkan waktu:</h2>
+                </div>
+                <table style="border:6px outset; margin: 20px auto;">
+                    <tr><td style="background-color:green; padding: 10px;">
+                        <p class="big" style="color:cyan; margin: 0;">${dateStr}</p>
+                    </td></tr>
+                </table><br>
+                <button class="btn" onclick="location.reload()">Kembali Input Data</button>
+            `;
+        }
+    }
+
+    // Latihan Window Object (Dipanggil via Tombol agar tidak langsung block halaman)
+    function testWindowObj() {
+        window.status = "Welcome"; 
+        window.alert("Selamat Datang"); 
+        var angka = window.prompt("Inputkan Angka ?", 0); 
+        var tampung = window.confirm("Jenis kelamin anda Pria ?"); 
+        
+        var out = "Angka favorit anda adalah = <strong>" + angka + "</strong><br>"; 
+        if (tampung) out += "Boleh Kenalan donk<br>";
+        else out += "Ok dech<br>";
+        document.getElementById("output-bagian8").innerHTML = out;
+    }
+
+
+    // =========================================================================
+    // 3. MERENDER STRUKTUR HTML
+    // =========================================================================
+    
+    document.body.innerHTML = `
+        <!-- BAGIAN A: PERPUSTAKAAN RESPONSIVE -->
+        <div class="lib-container">
+            <div class="header">
+                <h1 align="center"> Selamat Datang Di website sederhana </h1>
+            </div>
+            <div class="left">
+                <h3 align="center">Menu</h3>
+                <ul>
+                    <li><a href="#">Login</a></li>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">tentang saya</a></li>
+                </ul>
+            </div>
+            <div class="middle">
+                <h3 align="center">Berita</h3>
+                <p align="center"><strong><a href="#">Membuat Design Web Responsive</a></strong></p>
+                <p style="text-align: center;"><img src="foto.jpg" alt="Foto Kelas" style="width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></p>
+                <p><a href="#">Baca Selengkapnya >> </a></p>
+            </div>
+            <div class="right">
+                <h3 align="center">kategori</h3>
+                <ul>
+                    <li><a href="#">Web Design</a></li>
+                    <li><a href="#">Pemrograman</a></li>
+                    <li><a href="#">Database</a></li>
+                </ul>
+            </div>
+            <div class="footer">
+                <p>Copyright &copy;2026 Belajar CSS Responsive</p>
+            </div>
+        </div>
+
+        <!-- BAGIAN B: TUGAS GABUNGAN WEB -->
+        <div class="tugas-container">
+            <h1 class="judul-tugas">Tugas Gabungan Pemrograman Web</h1>
+            
+            <div class="info-box">
+                <div class="info-label">Nama Mahasiswa</div>
+                <div class="info-value">Raihan Rafi Afandi</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Nomor Induk Mahasiswa (NIM)</div>
+                <div class="info-value">251091700149</div>
+            </div>
+
+            <!-- Bagian 1 -->
+            <h2>Tabel Data Mahasiswa</h2>
+            <table style="background-color: pink;">
+                <tr><th>Nim</th><th>Nama</th><th>Alamat</th><th>Tempat, Tanggal Lahir</th><th>Jurusan</th></tr>
+                <tr><td>12110001</td><td>Anita</td><td>Cengkareng</td><td>Jakarta, 20 Agustus 1990</td><td>Sistem Informasi</td></tr>
+                <tr><td>12110002</td><td>Aditya</td><td>Tangerang</td><td>Semarang, 01 Januari 1989</td><td>Sistem Informasi</td></tr>
+                <tr><td>12110003</td><td>Firman</td><td>Bogor</td><td>Jakarta, 18 September 1988</td><td>Sistem Informasi</td></tr>
+            </table>
+
+            <!-- Bagian 2 -->
+            <h2>Aplikasi Perhitungan Tiket</h2>
+            <form name="fform">
+                <table>
+                    <tr><td colspan="2"><h3 style="text-align:center; margin: 10px 0;">Travel Bintang Abadi</h3></td></tr>
+                    <tr>
+                        <td style="width: 50%; vertical-align: top;"><pre>Nama         : <input type="text" size="20" name="inama">
+Tujuan       : <select name="itujuan"><option value="Jakarta">Jakarta</option><option value="Cirebon">Cirebon</option><option value="Tasikmalaya">Tasikmalaya</option></select>
+Jumlah Tiket : <input type="text" size="11" name="ijumlah"> 
+Member       : <input type="checkbox" name="imember"> Ya</pre></td>
+                        <td style="width: 50%; vertical-align: top;"><pre>Harga Tiket  : <input type="text" size="15" name="otiket" readonly> 
+Sub Total    : <input type="text" size="15" name="osub" readonly> 
+Diskon       : <input type="text" size="15" name="odiskon" readonly>
+Total Bayar  : <input type="text" size="15" name="ototal" readonly></pre></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <input type="button" class="btn" value="Hitung" onclick="hitungtotal()">
+                            <input type="reset" class="btn btn-reset" value="Ulang">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <!-- Bagian 3 -->
+            <h2>Deklarasi Variabel & Output</h2>
+            <div id="php-dasar-1" class="info-box"></div>
+            
+            <h2>Penggabungan String</h2>
+            <div id="php-dasar-2" class="info-box"></div>
+            
+            <h2>Perulangan For</h2>
+            <div id="php-dasar-3" class="info-box" style="max-height: 150px; overflow-y: auto;"></div>
+
+            <!-- Bagian 4 -->
+            <h2>Aplikasi Penerimaan Beasiswa</h2>
+            <div style="border: 1px solid #ddd; padding: 20px; text-align: left;">
+                <form onsubmit="event.preventDefault(); prosesBeasiswa();">
+<pre>Nama          : <input type="text" name="nama_beasiswa">
+NIM           : <input type="text" name="nim_beasiswa">
+Kelas         : <input type="text" name="kelas_beasiswa">
+Jurusan       : <select name="jurusan_beasiswa">
+                  <option value="Sistem Informasi">SI</option>
+                  <option value="Tehnik Informatika">TI</option>
+                </select>
+Jenis Kelamin : <input type="radio" value="Pria" name="jekel">Pria <input type="radio" value="Wanita" name="jekel">Wanita
+IPK           : <input type="text" size="4" name="ipk">
+<input type="submit" class="btn" value="Proses"> <input type="reset" class="btn btn-reset" value="Batal"></pre>
+                </form>
+                <div id="hasilBeasiswa"></div>
+            </div>
+
+            <!-- Bagian 5 -->
+            <h2>Latihan CSS (Pseudo-Class)</h2>
+            <div class="info-box latihan-css-box">
+                <a href="#" class="hello">Hello World</a>
+                <ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li><li><a href="#">Link 3</a></li><li><a href="#">Link 4</a></li><li><a href="#">Link 5</a></li></ul>
+            </div>
+
+            <!-- Bagian 6 -->
+            <h2>Latihan Fungsi Alert</h2>
+            <div class="info-box">
+                <input type="button" class="btn" onclick="myfunction('Good Morning!')" value="In the Morning">
+                <input type="button" class="btn btn-dark" onclick="myfunction('Good Evening!')" value="In the Evening">
+            </div>
+
+            <!-- Bagian 7 -->
+            <h2>Latihan Objek Date/Tanggal</h2>
+            <div id="hasil-tanggal" class="info-box" style="background-color: lightblue; text-align: center; border-left: 5px solid #2980b9;"></div>
+
+            <!-- Bagian 8 -->
+            <h2>Latihan Objek Window</h2>
+            <div class="info-box">
+                <button class="btn" onclick="testWindowObj()">Mulai Test Window Object</button>
+                <div id="output-bagian8" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Bagian 9 -->
+            <h2>Form Request & Pencetakan Waktu Server</h2>
+            <div id="hasilWaktu" class="info-box" style="text-align: center;">
+                <h1>Contoh Form (Satu File)</h1>
+                <form onsubmit="event.preventDefault(); prosesWaktuServer();" style="margin-top: 15px;">
+                    Input Nama Awal: <input type="text" id="firstName" style="padding: 5px;"/><br/><br/>
+                    <input type="submit" value="Simpan" class="btn"/>
+                </form>
+            </div>
+
+            <!-- Bagian 10 -->
+            <h2>Latihan Event OnFocus dan OnBlur (Registrasi)</h2>
+            <div class="info-box">
+                <h3 align="center" style="margin-bottom: 10px;">R E G I S T R A S I</h3>
+                <form name="f">
+                    <table class="table-noborder">
+                        <tr><td width="20%"><strong>NIM</strong></td><td width="5%">:</td><td width="75%"><input type="text" name="inim" size="15" onFocus="window.status='Silahkan Mengisi NIM Anda';" onBlur="masukannim()"></td></tr>
+                        <tr><td><strong>NAMA</strong></td><td>:</td><td><input type="text" name="inama" size="30" onFocus="window.status='Silahkan Mengisi Nama Anda';" onBlur="masukannama()"></td></tr>
+                        <tr><td><strong>ALAMAT</strong></td><td>:</td><td><input type="text" name="ialamat" size="40" onFocus="window.status='Silahkan Mengisi Alamat Anda';" onBlur="masukanalamat()"></td></tr>
+                    </table>
+                    <div style="text-align: center; margin-top:15px;">
+                        <input type="button" class="btn btn-dark" value="Kirim" onClick="terimakasih()">
+                        <input type="reset" class="btn btn-reset" value="Reset">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bagian 11 -->
+            <h2>Latihan Jam Digital</h2>
+            <div class="info-box" style="text-align: center; background-color: #f1f2f6;">
+                <input type="text" id="clockDisplay" size="20" readonly style="font-size: 24px; font-weight: bold; font-family: monospace; text-align: center; padding: 10px; border: 2px solid #3498db; border-radius: 8px;">
+            </div>
+
+            <!-- Bagian 12 -->
+            <h2>Latihan Background CSS</h2>
+            <div class="info-box latihan-background">
+                <p>nama saya Raihan Rafi Afandi</p>
+                <p>umur saya 19 tahun</p>
+            </div>
+
+            <!-- Bagian 13 -->
+            <h2>Latihan Objek Math</h2>
+            <div id="hasil-math" class="info-box"></div>
+
+            <!-- Bagian 14 -->
+            <h2>Latihan Marquee</h2>
+            <div class="info-box" style="text-align: center; background-color: lightblue;">
+                <form method="post" name="basis">
+                    <input type="text" name="kotak" size="30" readonly style="padding: 10px; font-size: 16px; font-weight: bold; text-align: center;">
+                </form>
+            </div>
+
+            <!-- Bagian 15 -->
+            <h2>Latihan Halaman Frame</h2>
+            <div class="info-box" style="background-color: pink; color: black; padding: 20px; border-left: 5px solid #ff6b81; text-align: center;">
+                <h1>Halaman ini dengan menggunakan Frame</h1>
+                <p><strong>Design By Raihan Rafi Afandi</strong></p>
+            </div>
+            
+            <div class="footer-date">tugas java web</div>
+        </div>
+    `;
+
+
+    // =========================================================================
+    // 4. MENGEKSEKUSI DATA (MENGISI ELEMEN KOSONG SAAT LOAD SELESAI)
+    // =========================================================================
+    
+    // (Konversi Bagian 3: PHP -> JS String)
+    let b3_nim = "251091700149";
+    let b3_nama = "Raihan Rafi Afandi";
+    let b3_kelas = "03SISE002";
+    document.getElementById("php-dasar-1").innerHTML = `Nim Saya = ${b3_nim}<br>Nama Saya = ${b3_nama}<br>Kelas Saya = ${b3_kelas}<br>`;
+    
+    let teks1 = "Aku Sedang belajar ", teks2 = "Pemrograman Web ", teks3 = "Menggunakan murni JavaScript ";
+    document.getElementById("php-dasar-2").innerHTML = `<strong>Output:</strong> ${teks1 + teks2 + teks3}`;
+    
+    let strFor = "";
+    for(let kata = 1; kata <= 20; kata++) { strFor += kata + ". Saya Sedang Belajar Dasar Pemrograman Web<br/>"; }
+    document.getElementById("php-dasar-3").innerHTML = strFor;
+
+    // (Konversi Bagian 7: Object Date -> Render JS)
+    var hariArr = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    var blnArr = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    var t = new Date();
+    var mnt = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
+    var dt = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+    
+    document.getElementById("hasil-tanggal").innerHTML = `
+        <div style='font-size: 20px; font-family: arial;'>
+            <b>Sekarang adalah hari : ${hariArr[t.getDay()]}, tanggal: ${t.getDate()} ${blnArr[t.getMonth()]} ${t.getFullYear()}</b>
+            <hr style='width: 80%; margin: 15px auto; border: 1px solid #777;'>
+        </div>
+        <div style='font-size: 16px; font-family: arial;'>
+            <b>Jam sekarang = ${t.getHours()}:${mnt}:${dt}</b>
+        </div>
+    `;
+
+    // (Konversi Bagian 13: Object Math)
+    var a = 3, b = 2;
+    var besar = Math.max(a, b);
+    var pangkat = Math.pow(b, a);
+    var ran = Math.round(Math.random() * 16);
+    var akar = Math.sqrt(ran);
+    document.getElementById("hasil-math").innerHTML = `
+        antara ${a} dan ${b} lebih besar ${besar}<br>
+        ${b} pangkat ${a} adalah ${pangkat}<br>
+        Anda adalah pengunjung yang ke ${ran}.<br>
+        Akar dari ${ran} adalah ${akar}<br>
+    `;
+
+    // =========================================================================
+    // 5. INISIALISASI AKHIR
+    // =========================================================================
+    // Menjalankan jam digital & marquee 
+    startClock();
+    p();
+
+</script>
+
+</body>
+</html>
